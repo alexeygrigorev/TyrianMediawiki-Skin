@@ -37,17 +37,9 @@ class SkinTyrianMediaWiki extends SkinTemplate {
   }
 }
 
-class TyrianMediaWikiTemplate extends QuickTemplate {
+class TyrianMediaWikiTemplate extends BaseTemplate {
   public $skin;
 
-  /**
-   * Template filter callback for Bootstrap skin.
-   * Takes an associative array of data set from a SkinTemplate-based
-   * class, and a wrapper for MediaWiki's localization database, and
-   * outputs a formatted page.
-   *
-   * @access private
-   */
   public function execute() {
     global $wgRequest, $wgUser, $wgSitename, $wgSitenameshort, $wgCopyrightLink;
     global $wgCopyright, $wgBootstrap, $wgArticlePath, $wgGoogleAnalyticsID;
@@ -65,22 +57,40 @@ class TyrianMediaWikiTemplate extends QuickTemplate {
     // Suppress warnings to prevent notices about missing indexes in $this->data
     wfSuppressWarnings();
     $this->html('headelement');
+    ?>
+      <div class="ololo-wiki">
+      <?php
+        $this->header($wgUser);
+        $this->body();
+        $this->footer();
+        $this->html('bottomscripts'); /* JS call to runBodyOnloadHook */
+        $this->html('reporttime');
+      ?>
+      </div>
+    <?php
+    echo Html::closeElement( 'body' );
+    echo Html::closeElement( 'html' );
+    wfRestoreWarnings();
+  }
+
+  private function header($wgUser) { 
+    global $wgSitename;
+    $mainPageUrl = $this->data['nav_urls']['mainpage']['href'];
 
     ?>
-    <div class="ololo-wiki">
-
     <header class="wiki-header">
       <div class="site-title">
         <div class="container">
           <div class="row">
             <div class="site-title-buttons">
               <div class="btn-group">
-                <div >
+                <div>
                   <form class="navbar-search navbar-form navbar-right" action="<?php $this->text( 'wgScript' ) ?>" id="searchform" role="search">
                     <div class="input-group">
                       <input class="form-control" type="search" name="search" placeholder="Search" title="Search <?php echo $wgSitename; ?> [ctrl-option-f]" accesskey="f" id="searchInput" autocomplete="off">
                       <input type="hidden" name="title" value="Special:Search">
                       <div class="input-group-btn">
+                        <input name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton btn btn-default" type="submit">
                         <input name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton btn btn-default" type="submit">
                       </div>
                     </div>
@@ -89,7 +99,7 @@ class TyrianMediaWikiTemplate extends QuickTemplate {
               </div>
             </div>
             <div class="wiki-title">
-              <h1><a href="<?php echo $this->data['nav_urls']['mainpage']['href'] ?>"><?php echo $wgSitename ?></a></h1>
+              <h1><a href="<?php echo $mainPageUrl; ?>"><?php echo $wgSitename; ?></a></h1>
             </div>
           </div>
         </div>
@@ -99,135 +109,154 @@ class TyrianMediaWikiTemplate extends QuickTemplate {
         <div class="container">
           <div class="row">
             <ul class="nav navbar-nav">
-              <li><a href="<?php echo $this->data['nav_urls']['mainpage']['href'] ?>">Home</a></li>
+              <li><a href="<?php echo $mainPageUrl; ?>">Home</a></li>
               <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tools <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li><a href="<?php echo $url_prefix; ?>Special:RecentChanges" class="recent-changes"><i class="fa fa-edit"></i> Recent Changes</a></li>
-                  <li><a href="<?php echo $url_prefix; ?>Special:SpecialPages" class="special-pages"><i class="fa fa-star-o"></i> Special Pages</a></li>
-                  <?php if ( $wgEnableUploads ) { ?>
-                  <li><a href="<?php echo $url_prefix; ?>Special:Upload" class="upload-a-file"><i class="fa fa-upload"></i> Upload a File</a></li>
-                  <?php } ?>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-cog"></i> Page Info<span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                  <?php
+                    foreach ( $this->getToolbox() as $key => $tbitem) {
+                      echo $this->makeListItem( $key, $tbitem );
+                    }
+                  ?>
                 </ul>
-              </li>              
+              </li>
             </ul>
 
-            <div> <!-- user zone -->
-              <?php
-              if ($wgUser->isLoggedIn()) {
-                if (count($this->data['personal_urls']) > 0) {
-                  $name = strtolower($wgUser->getName());
-                  $user_nav = $this->get_array_links( $this->data['personal_urls'], $user_icon . $name, 'user' );
-                  ?>
-                  <ul<?php $this->html('userlangattributes') ?> class="nav navbar-nav navbar-right">
-                    <?php echo $user_nav; ?>
-                  </ul>
-                  <?php
-                }
-
-                if ( count( $this->data['content_actions']) > 0 ) {
-                  $content_nav = $this->get_array_links( $this->data['content_actions'], 'Page', 'page' );
-                  ?>
-                  <ul class="nav navbar-nav navbar-right content-actions"><?php echo $content_nav; ?></ul>
-                  <?php
-                }
-              } else {  // not logged in
-                ?>
-                <ul class="nav navbar-nav navbar-right">
-                  <li>
-                  <?php echo Linker::linkKnown( SpecialPage::getTitleFor( 'Userlogin' ), wfMsg( 'login' ) ); ?>
-                  </li>
-                </ul>
-                <?php
-              }
-              ?>
+            <div>
+              <?php $this->userspace($wgUser); ?>
             </div>
-          <div>
+          </div>
         </div>
       </nav>  
     </header>
+    <?php
+  }
 
+  private function userspace($wgUser) {
+    if ($wgUser->isLoggedIn()) {
+      $personal = $this->data['personal_urls'];
+
+      $name = $wgUser->getName();
+      $user_nav = $this->get_array_links($personal, $user_icon . $name, 'user');
+      ?>
+      <ul class="nav navbar-nav navbar-right">
+        <?php echo $user_nav; ?>
+      </ul>
+      <?php
+    
+      if (count( $this->data['content_actions']) > 0) {
+        $content_nav = 
+          $this->get_array_links($this->data['content_actions'], 'Page Actions', 'page');
+        ?>
+        <ul class="nav navbar-nav navbar-right content-actions"><?php echo $content_nav; ?></ul>
+        <?php
+      }
+    } else { 
+      ?>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <?php echo Linker::linkKnown( SpecialPage::getTitleFor('Userlogin'), wfMsg('login')); ?>
+        </li>
+      </ul>
+      <?php
+    }
+  }
+
+  private function body() {
+    ?>
     <div id="wiki-outer-body">
       <div id="wiki-body" class="container">
-        <?php
-          if ( 'sidebar' == $wgTOCLocation ) {
-            ?>
-            <div class="row">
-              <section class="col-md-3 toc-sidebar"></section>
-              <section class="col-md-9 wiki-body-section">
-            <?php
-          }//end if
-        ?>
-        <?php if( $this->data['sitenotice'] ) { ?><div id="siteNotice" class="alert-message warning"><?php $this->html('sitenotice') ?></div><?php } ?>
+        <?php if( $this->data['sitenotice'] ) { ?>
+          <div id="siteNotice" class="alert-message warning">
+            <?php $this->html('sitenotice') ?>
+          </div>
+        <?php } ?>
+
         <?php if ( $this->data['undelete'] ): ?>
-        <!-- undelete -->
-        <div id="contentSub2"><?php $this->html( 'undelete' ) ?></div>
-        <!-- /undelete -->
-        <?php endif; ?>
-        <?php if($this->data['newtalk'] ): ?>
-        <!-- newtalk -->
-        <div class="usermessage"><?php $this->html( 'newtalk' )  ?></div>
-        <!-- /newtalk -->
+          <!-- undelete -->
+          <div id="contentSub2"><?php $this->html( 'undelete' ) ?></div>
+          <!-- /undelete -->
         <?php endif; ?>
 
+        <?php if($this->data['newtalk'] ) { ?>
+          <!-- newtalk -->
+          <div class="usermessage"><?php $this->html( 'newtalk' )  ?></div>
+          <!-- /newtalk -->
+        <?php } ?>
+
         <div class="pagetitle page-header">
-          <h1><?php $this->html( 'title' ) ?> <small><?php $this->html('subtitle') ?></small></h1>
+          <h1><?php $this->html('title') ?><small><?php $this->html('subtitle') ?></small></h1>
         </div>  
 
         <div class="body">
-        <?php $this->html( 'bodytext' ) ?>
+          <?php $this->html('bodytext') ?>
         </div>
 
-        <?php if ( $this->data['catlinks'] ): ?>
-        <div class="category-links">
-        <!-- catlinks -->
-        <?php $this->html( 'catlinks' ); ?>
-        <!-- /catlinks -->
-        </div>
-        <?php endif; ?>
-        <?php if ( $this->data['dataAfterContent'] ): ?>
-        <div class="data-after-content">
-        <!-- dataAfterContent -->
-        <?php $this->html( 'dataAfterContent' ); ?>
-        <!-- /dataAfterContent -->
-        </div>
-        <?php endif; ?>
-        <?php
-          if ('sidebar' == $wgTOCLocation ) {
-            ?>
+        <?php if ($this->data['catlinks']) { ?>
+          <div class="category-links">
+            <!-- catlinks -->
+            <?php $this->html( 'catlinks' ); ?>
+            <!-- /catlinks -->
+          </div>
+        <?php } ?>
+
+        <?php if ($this->data['dataAfterContent']) { ?>
+          <div class="data-after-content">
+          <!-- dataAfterContent -->
+          <?php $this->html( 'dataAfterContent' ); ?>
+          <!-- /dataAfterContent -->
+          </div>
+        <?php } ?>
+
+        <?php if ('sidebar' == $wgTOCLocation) { ?>
             </section></section>
-            <?php
-          }//end if
-        ?>
+        <?php } ?>
       </div>
     </div>
-    <hr/>
-    <p></p>
+    <?php
+  }
+
+  private function footer() {
+    $lowerfooterlinks = array('privacy', 'about', 'disclaimer', 'tagline');
+    ?>
+    <hr/><p></p>
+    
+    <div id="footer">
+
     <footer>
       <div class="container">
+        <?php
+          if (isset($this->data['lastmod']) && $this->data['lastmod']) { 
+            ?>
+            <div class="row">
+            <span id="lastmod"><?php $this->html('lastmod'); ?></span>
+            </div>
+            <?php 
+          }
+        ?>
+
         <div class="row">
-          <div class="width: 15px;"></div>
           <div>
             <strong>2012 &ndash; <?php echo date('Y'); ?> by 
               <a href="http://alexeygrigorev.com">Alexey Grigorev</a></strong><br/>
             Powered by <a href="https://www.mediawiki.org">MediaWiki</a>. 
-            Theme and style <a href="https://github.com/gentoo/tyrian">Tyrian</a> 
-            by <a href="https://www.gentoo.org/">Gentoo</a>.<br/>
+            <a href="https://github.com/alexeygrigorev/TyrianMediawiki-Skin">TyrianMediawiki Skin</a>, 
+            with <a href="https://github.com/gentoo/tyrian">Tyrian</a> design by <a href="https://www.gentoo.org/">Gentoo</a>.<br/>
             <small>
-              The contents of this document, unless otherwise expressly stated, are licensed under the
-              <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license">CC-BY-SA-3.0</a> license.
+            <?php
+              foreach ($lowerfooterlinks as $aLink) {
+                if (isset($this->data[$aLink]) && $this->data[$aLink]) { 
+                  ?>
+                  <span id="<?php echo $aLink; ?>"><?php $this->html($aLink); ?></span>
+                  <?php 
+                }
+              }    
+            ?>
             </small>
-          </div>
         </div>
       </div>
     </footer>
-    <?php
-    $this->html('bottomscripts'); /* JS call to runBodyOnloadHook */
-    $this->html('reporttime');
-    ?>
-    </div>
-    </body>
-    </html>
     <?php
   }
 
@@ -235,11 +264,11 @@ class TyrianMediaWikiTemplate extends QuickTemplate {
    * Render one or more navigations elements by name, automatically reveresed
    * when UI is in RTL mode
    */
-  private function nav( $nav ) {
+  private function nav($nav) {
     $output = '';
-    foreach ( $nav as $topItem ) {
-      $pageTitle = Title::newFromText( $topItem['link'] ?: $topItem['title'] );
-      if ( array_key_exists( 'sublinks', $topItem ) ) {
+    foreach ($nav as $topItem) {
+      $pageTitle = Title::newFromText($topItem['link'] ?: $topItem['title']);
+      if (array_key_exists('sublinks', $topItem)) {
         $output .= '<li class="dropdown">';
         $output .= '<a href="#" class="dropdown-toggle" data-toggle="dropdown">' . $topItem['title'] . ' <b class="caret"></b></a>';
         $output .= '<ul class="dropdown-menu">';
@@ -374,7 +403,7 @@ class TyrianMediaWikiTemplate extends QuickTemplate {
     return $nav;  
   }//end get_page_links
 
-  private function get_array_links( $array, $title, $which ) {
+  private function get_array_links($array, $title, $which) {
     $nav = array();
     $nav[] = array('title' => $title);
     foreach ($array as $key => $item) {
@@ -411,7 +440,7 @@ class TyrianMediaWikiTemplate extends QuickTemplate {
             $icon = 'lock'; 
             break;
           case 'Watch': 
-            $icon = 'eye-open'; 
+            $icon = 'eye'; 
             break;
           case 'Unwatch': 
             $icon = 'eye-slash'; 
@@ -420,13 +449,25 @@ class TyrianMediaWikiTemplate extends QuickTemplate {
 
         $link['title'] = '<i class="fa fa-' . $icon . '"></i> ' . $link['title'];
       } elseif ('user' == $which) {
-        switch($link['title']) {
-          case 'My talk': $icon = 'comment'; break;
-          case 'My preferences': $icon = 'cog'; break;
-          case 'My watchlist': $icon = 'eye-close'; break;
-          case 'My contributions': $icon = 'list-alt'; break;
-          case 'Log out': $icon = 'off'; break;
-          default: $icon = 'user'; break;
+        switch ($link['title']) {
+          case 'Talk': 
+            $icon = 'comment'; 
+            break;
+          case 'Preferences': 
+            $icon = 'cog'; 
+            break;
+          case 'Watchlist': 
+            $icon = 'list'; 
+            break;
+          case 'Contributions': 
+            $icon = 'list-alt'; 
+            break;
+          case 'Log out': 
+            $icon = 'power-off'; 
+            break;
+          default: 
+            $icon = 'user'; 
+            break;
         }
 
         $link['title'] = '<i class="fa fa-' . $icon . '"></i> ' . $link['title'];

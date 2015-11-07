@@ -3,8 +3,8 @@
 A bootstrap-based skin for MediaWiki
 
 
-- Uses Gentoo Tyrian styles https://github.com/gentoo/tyrian
-- Skin code largely borrowed from http://borkweb.github.io/bootstrap-mediawiki/
+- Uses [Gentoo Tyrian](https://github.com/gentoo/tyrian) design 
+- Skin code is largely based on http://borkweb.github.io/bootstrap-mediawiki/
 
 
 ## Installation 

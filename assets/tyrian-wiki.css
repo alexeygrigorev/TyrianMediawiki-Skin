@@ -3,6 +3,10 @@
     max-width: 1000px !important;
 }
 
+body .ololo-wiki #wiki-body {
+    font-size: 110%;
+}
+
 .wiki-title {
     padding-left: 15px;
 }
@@ -78,4 +82,13 @@ code, kbd, pre, samp {
 
 mw-content-ltr ul {
     padding-bottom: 15px;
+}
+
+.mw-editsection {
+    float: right;
+}
+
+
+.ololo-wiki footer {
+    padding-top: 1.5em !important;
 }
