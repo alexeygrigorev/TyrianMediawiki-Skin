@@ -1,0 +1,81 @@
+.ololo-wiki .container {
+    width: 1000px;
+    max-width: 1000px !important;
+}
+
+.wiki-title {
+    padding-left: 15px;
+}
+
+.ololo-wiki .site-title-buttons {
+    margin-right: 0px !important;
+}
+
+.navbar-sticky {
+    margin-top: -5px !important;
+}
+
+#toc, .toc {
+    display: table;
+    padding: 7px;
+}
+#toc, .toc, .mw-warning, .toccolours {
+    border: 1px solid #AAA;
+    background-color: #F9F9F9;
+    padding: 5px;
+    font-size: 95%;
+}
+
+#toc ul, .toc ul {
+    list-style-type: none;
+    list-style-image: none;
+    text-align: left;
+}
+
+#toc h2, .toc h2 {
+    display: inline;
+    border: medium none;
+    padding: 0px;
+    font-size: 100%;
+    font-weight: bold;
+}
+#toc .toctoggle, .toc .toctoggle {
+    font-size: 94%;
+}
+
+#toc #toctitle, .toc #toctitle, #toc .toctitle, .toc .toctitle {
+    text-align: center;
+}
+
+#toc #toctitle, .toc #toctitle, #toc .toctitle, .toc .toctitle {
+    direction: ltr;
+}
+
+#catlinks {
+    text-align: left;
+}
+
+.catlinks {
+    margin-top: 30px;
+    margin-bottom: 4px;
+    padding: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background-color: #EEE;
+    border-radius: 4px;
+}
+
+code {
+    padding: 2px 4px;
+    font-size: 90%;
+    color: #C7254E;
+    background-color: #F9F2F4;
+    border-radius: 4px;
+}
+
+code, kbd, pre, samp {
+    font-family: Consolas,monospace,Menlo,Monaco,"Courier New";
+}
+
+mw-content-ltr ul {
+    padding-bottom: 15px;
+}
