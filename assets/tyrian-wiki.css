@@ -92,3 +92,7 @@ mw-content-ltr ul {
 .ololo-wiki footer {
     padding-top: 1.5em !important;
 }
+
+.ololo-wiki div.data-after-content {
+    padding-top: 3em;
+}

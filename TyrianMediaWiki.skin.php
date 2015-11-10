@@ -68,8 +68,8 @@ class TyrianMediaWikiTemplate extends BaseTemplate {
       ?>
       </div>
     <?php
-    echo Html::closeElement( 'body' );
-    echo Html::closeElement( 'html' );
+    echo Html::closeElement('body');
+    echo Html::closeElement('html');
     wfRestoreWarnings();
   }
 
@@ -78,7 +78,7 @@ class TyrianMediaWikiTemplate extends BaseTemplate {
     $mainPageUrl = $this->data['nav_urls']['mainpage']['href'];
 
     ?>
-    <header class="wiki-header">
+    <header class="wiki-header noprint">
       <div class="site-title">
         <div class="container">
           <div class="row">
@@ -202,15 +202,15 @@ class TyrianMediaWikiTemplate extends BaseTemplate {
         <?php } ?>
 
         <?php if ($this->data['dataAfterContent']) { ?>
-          <div class="data-after-content">
+          <div class="data-after-content noprint">
           <!-- dataAfterContent -->
-          <?php $this->html( 'dataAfterContent' ); ?>
+          <?php $this->html('dataAfterContent'); ?>
           <!-- /dataAfterContent -->
           </div>
         <?php } ?>
 
         <?php if ('sidebar' == $wgTOCLocation) { ?>
-            </section></section>
+          </section></section>
         <?php } ?>
       </div>
     </div>
@@ -220,26 +220,25 @@ class TyrianMediaWikiTemplate extends BaseTemplate {
   private function footer() {
     $lowerfooterlinks = array('privacy', 'about', 'disclaimer', 'tagline');
     ?>
-    <hr/><p></p>
-    
-    <div id="footer">
+    <hr/> 
 
-    <footer>
-      <div class="container">
-        <?php
-          if (isset($this->data['lastmod']) && $this->data['lastmod']) { 
-            ?>
-            <div class="row">
-            <span id="lastmod"><?php $this->html('lastmod'); ?></span>
-            </div>
-            <?php 
-          }
-        ?>
+    <div id="footer">
+      <footer>
+        <div class="container">
+          <?php
+            if (isset($this->data['lastmod']) && $this->data['lastmod']) { 
+              ?>
+              <div class="row">
+              <span id="lastmod"><?php $this->html('lastmod'); ?></span>
+              </div>
+              <?php 
+            }
+          ?>
 
         <div class="row">
           <div>
             <strong>2012 &ndash; <?php echo date('Y'); ?> by 
-              <a href="http://alexeygrigorev.com">Alexey Grigorev</a></strong><br/>
+            <a href="http://alexeygrigorev.com">Alexey Grigorev</a></strong><br/>
             Powered by <a href="https://www.mediawiki.org">MediaWiki</a>. 
             <a href="https://github.com/alexeygrigorev/TyrianMediawiki-Skin">TyrianMediawiki Skin</a>, 
             with <a href="https://github.com/gentoo/tyrian">Tyrian</a> design by <a href="https://www.gentoo.org/">Gentoo</a>.<br/>
@@ -254,9 +253,10 @@ class TyrianMediaWikiTemplate extends BaseTemplate {
               }    
             ?>
             </small>
+          </div>
         </div>
-      </div>
-    </footer>
+      </footer>
+    </div>
     <?php
   }
 
@@ -304,19 +304,19 @@ class TyrianMediaWikiTemplate extends BaseTemplate {
    * Render one or more navigations elements by name, automatically reveresed
    * when UI is in RTL mode
    */
-  private function nav_select( $nav ) {
+  private function nav_select($nav) {
     $output = '';
-    foreach ( $nav as $topItem ) {
-      $pageTitle = Title::newFromText( $topItem['link'] ?: $topItem['title'] );
-      $output .= '<optgroup label="'.strip_tags( $topItem['title'] ).'">';
-      if ( array_key_exists( 'sublinks', $topItem ) ) {
-        foreach ( $topItem['sublinks'] as $subLink ) {
-          if ( 'divider' == $subLink ) {
+    foreach ($nav as $topItem) {
+      $pageTitle = Title::newFromText($topItem['link'] ?: $topItem['title']);
+      $output .= '<optgroup label="' . strip_tags($topItem['title']) . '">';
+      if (array_key_exists( 'sublinks', $topItem)) {
+        foreach ($topItem['sublinks'] as $subLink) {
+          if ('divider' == $subLink) {
             $output .= "<option value='' disabled='disabled' class='unclickable'>----</option>\n";
-          } elseif ( $subLink['textonly'] ) {
+          } elseif ($subLink['textonly']) {
             $output .= "<option value='' disabled='disabled' class='unclickable'>{$subLink['title']}</option>\n";
           } else {
-            if( $subLink['local'] && $pageTitle = Title::newFromText( $subLink['link'] ) ) {
+            if ($subLink['local'] && $pageTitle == Title::newFromText($subLink['link'])) {
               $href = $pageTitle->getLocalURL();
             } else {
               $href = $subLink['link'];
@@ -338,70 +338,73 @@ class TyrianMediaWikiTemplate extends BaseTemplate {
     $titleBar = $this->getPageRawText( $source );
     $nav = array();
     foreach(explode("\n", $titleBar) as $line) {
-      if(trim($line) == '') continue;
-      if( preg_match('/^\*\*\s*divider/', $line ) ) {
-        $nav[ count( $nav ) - 1]['sublinks'][] = 'divider';
+      if (trim($line) == '') {
         continue;
-      }//end if
+      }
+
+      if (preg_match('/^\*\*\s*divider/', $line)) {
+        $nav[count( $nav ) - 1]['sublinks'][] = 'divider';
+        continue;
+      }
 
       $sub = false;
       $link = false;
       $external = false;
 
-      if(preg_match('/^\*\s*([^\*]*)\[\[:?(.+)\]\]/', $line, $match)) {
+      if (preg_match('/^\*\s*([^\*]*)\[\[:?(.+)\]\]/', $line, $match)) {
         $sub = false;
         $link = true;
-      }elseif(preg_match('/^\*\s*([^\*\[]*)\[([^\[ ]+) (.+)\]/', $line, $match)) {
+      } elseif (preg_match('/^\*\s*([^\*\[]*)\[([^\[ ]+) (.+)\]/', $line, $match)) {
         $sub = false;
         $link = true;
         $external = true;
-      }elseif(preg_match('/^\*\*\s*([^\*\[]*)\[([^\[ ]+) (.+)\]/', $line, $match)) {
+      } elseif(preg_match('/^\*\*\s*([^\*\[]*)\[([^\[ ]+) (.+)\]/', $line, $match)) {
         $sub = true;
         $link = true;
         $external = true;
-      }elseif(preg_match('/\*\*\s*([^\*]*)\[\[:?(.+)\]\]/', $line, $match)) {
+      } elseif(preg_match('/\*\*\s*([^\*]*)\[\[:?(.+)\]\]/', $line, $match)) {
         $sub = true;
         $link = true;
-      }elseif(preg_match('/\*\*\s*([^\* ]*)(.+)/', $line, $match)) {
+      } elseif(preg_match('/\*\*\s*([^\* ]*)(.+)/', $line, $match)) {
         $sub = true;
         $link = false;
-      }elseif(preg_match('/^\*\s*(.+)/', $line, $match)) {
+      } elseif(preg_match('/^\*\s*(.+)/', $line, $match)) {
         $sub = false;
         $link = false;
       }
 
-      if( strpos( $match[2], '|' ) !== false ) {
-        $item = explode( '|', $match[2] );
+      if (strpos( $match[2], '|' ) !== false) {
+        $item = explode('|', $match[2]);
         $item = array(
           'title' => $match[1] . $item[1],
           'link' => $item[0],
           'local' => true,
         );
       } else {
-        if( $external ) {
+        if($external) {
           $item = $match[2];
           $title = $match[1] . $match[3];
         } else {
           $item = $match[1] . $match[2];
           $title = $item;
-        }//end else
+        }
 
-        if( $link ) {
-          $item = array('title'=> $title, 'link' => $item, 'local' => ! $external , 'external' => $external );
+        if ($link) {
+          $item = array('title'=> $title, 'link' => $item, 'local' => !$external , 'external' => $external );
         } else {
           $item = array('title'=> $title, 'link' => $item, 'textonly' => true, 'external' => $external );
-        }//end else
-      }//end else
+        }
+      }
 
       if( $sub ) {
         $nav[count( $nav ) - 1]['sublinks'][] = $item;
       } else {
         $nav[] = $item;
-      }//end else
+      }
     }
 
     return $nav;  
-  }//end get_page_links
+  }
 
   private function get_array_links($array, $title, $which) {
     $nav = array();
