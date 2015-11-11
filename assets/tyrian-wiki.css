@@ -80,8 +80,16 @@ code, kbd, pre, samp {
     font-family: Consolas,monospace,Menlo,Monaco,"Courier New";
 }
 
-mw-content-ltr ul {
+#mw-content-text ul {
     padding-bottom: 15px;
+}
+
+#toc ul {
+    padding-bottom: 0px;
+}
+
+#mw-content-text ul ul, #mw-content-text ul ul ul, #mw-content-text ul ul ul ul {
+    padding-bottom: 0.3em;   
 }
 
 .mw-editsection {
