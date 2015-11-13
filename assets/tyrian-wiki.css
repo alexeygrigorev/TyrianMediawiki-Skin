@@ -104,3 +104,7 @@ code, kbd, pre, samp {
 .ololo-wiki div.data-after-content {
     padding-top: 3em;
 }
+
+textarea {
+    width: 100%;
+}
