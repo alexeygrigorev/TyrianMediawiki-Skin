@@ -254,7 +254,7 @@ class TyrianMediaWikiTemplate extends BaseTemplate {
             ?>
             </small>
           </div>
-        </div>
+        </div></div>
       </footer>
     </div>
     <?php
