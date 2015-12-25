@@ -1,6 +1,24 @@
 .ololo-wiki .container {
-    width: 1000px;
     max-width: 1000px !important;
+}
+
+@media (max-width: 768px) {
+  .ololo-wiki #wiki-actions {
+    display: none;
+  }
+}
+
+.ololo-wiki .navbar {
+    position: initial;
+}
+
+.ololo-wiki .navbar-nav {
+    margin: 0px 0px !important;
+}
+
+.ololo-wiki .navbar-form {
+    margin: 0px 0px !important;
+    padding: 0px 15px !important;
 }
 
 body .ololo-wiki #wiki-body {
