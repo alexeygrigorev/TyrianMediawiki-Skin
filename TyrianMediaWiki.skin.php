@@ -241,7 +241,7 @@ class TyrianMediaWikiTemplate extends BaseTemplate {
 
         <div class="row">
           <div>
-            <strong><a href="http://bit.ly/mlbookcamp" target="_blank">Machine Learning Bookcamp</a><strong>: learn machine learning by doing projects (get 40% off with code "grigorevpc")<br/>
+            <strong><a href="http://bit.ly/mlbookcamp" target="_blank">Machine Learning Bookcamp</a></strong>: learn machine learning by doing projects (get 40% off with code "grigorevpc")<br/>
             <strong>2012 &ndash; <?php echo date('Y'); ?> by 
             <a href="http://alexeygrigorev.com">Alexey Grigorev</a></strong><br/>
             Powered by <a href="https://www.mediawiki.org">MediaWiki</a>. 
