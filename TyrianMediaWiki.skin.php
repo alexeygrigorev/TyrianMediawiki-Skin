@@ -203,8 +203,12 @@ class TyrianMediaWikiTemplate extends BaseTemplate {
 
         <?php if ($this->data['dataAfterContent']) { ?>
           <div class="data-after-content noprint">
+            <p>
+              <strong><a href="http://bit.ly/mlbookcamp" target="_blank">Machine Learning Bookcamp</a></strong>: Learn machine learning by doing projects. Get 40% off with code "grigorevpc".
+            </p>
           <!-- dataAfterContent -->
           <?php $this->html('dataAfterContent'); ?>
+            
           <!-- /dataAfterContent -->
           </div>
         <?php } ?>
@@ -237,9 +241,9 @@ class TyrianMediaWikiTemplate extends BaseTemplate {
 
         <div class="row">
           <div>
+            <strong><a href="http://bit.ly/mlbookcamp" target="_blank">Machine Learning Bookcamp</a><strong>: learn machine learning by doing projects (get 40% off with code "grigorevpc")<br/>
             <strong>2012 &ndash; <?php echo date('Y'); ?> by 
             <a href="http://alexeygrigorev.com">Alexey Grigorev</a></strong><br/>
-            <a href="http://bit.ly/mlbookcamp" target="_blank">Machine Learning Bookcamp</a>: learn machine learning by doing prokects (get 40% off with code "grigorevpc")<br/>
             Powered by <a href="https://www.mediawiki.org">MediaWiki</a>. 
             <a href="https://github.com/alexeygrigorev/TyrianMediawiki-Skin">TyrianMediawiki Skin</a>, 
             with <a href="https://github.com/gentoo/tyrian">Tyrian</a> design by <a href="https://www.gentoo.org/">Gentoo</a>.<br/>
