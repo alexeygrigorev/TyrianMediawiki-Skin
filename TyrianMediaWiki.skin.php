@@ -239,6 +239,7 @@ class TyrianMediaWikiTemplate extends BaseTemplate {
           <div>
             <strong>2012 &ndash; <?php echo date('Y'); ?> by 
             <a href="http://alexeygrigorev.com">Alexey Grigorev</a></strong><br/>
+            <a href="http://bit.ly/mlbookcamp" target="_blank">Machine Learning Bookcamp</a>: learn machine learning by doing prokects (get 40% off with code "grigorevpc")<br/>
             Powered by <a href="https://www.mediawiki.org">MediaWiki</a>. 
             <a href="https://github.com/alexeygrigorev/TyrianMediawiki-Skin">TyrianMediawiki Skin</a>, 
             with <a href="https://github.com/gentoo/tyrian">Tyrian</a> design by <a href="https://www.gentoo.org/">Gentoo</a>.<br/>
